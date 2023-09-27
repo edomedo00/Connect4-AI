@@ -1,10 +1,4 @@
-package NRow.Trees;
-
-import java.util.ArrayList;
-import java.util.List;
-import NRow.Board;
-
-public class TreeNode {
+class TreeNode {
     private float eval;
     private Board board;
     private List<TreeNode> children;
@@ -20,10 +14,6 @@ public class TreeNode {
 
     public float getEval() {
         return eval;
-    }
-    
-    public Board getBoard(){
-      return board;
     }
 
     public void setEval(float evaluation) {
