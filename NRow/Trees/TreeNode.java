@@ -5,12 +5,18 @@ import java.util.List;
 import NRow.Board;
 
 public class TreeNode {
-    private float eval;
+    private int eval;
     private Board board;
     private List<TreeNode> children;
 
     public TreeNode(Board board) {
         this.board = board;
+        this.eval = 0;
+        this.children = new ArrayList<>();
+    }
+
+    public TreeNode() {
+        this.eval = Integer.MIN_VALUE;
         this.children = new ArrayList<>();
     }
 
@@ -18,7 +24,7 @@ public class TreeNode {
         children.add(child);
     }
 
-    public float getEval() {
+    public int getEval() {
         return eval;
     }
     
@@ -26,7 +32,7 @@ public class TreeNode {
       return board;
     }
 
-    public void setEval(float evaluation) {
+    public void setEval(int evaluation) {
       this.eval = evaluation;
     }
 

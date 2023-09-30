@@ -28,15 +28,15 @@ public class App {
 
         Board board = new Board(boardWidth, boardHeight);
 
-        PlayerController minMax1 = new MinMaxPlayer(1, n, 3, heuristic1, board);
-        PlayerController minMax2 = new MinMaxPlayer(2, n, 3, heuristic2, board);
+        PlayerController minMax1 = new MinMaxPlayer(1, n, 0, heuristic1, board);
+        PlayerController minMax2 = new MinMaxPlayer(2, n, 0, heuristic2, board);
 
         PlayerController human = new HumanPlayer(1, n, heuristic1);
         PlayerController human2 = new HumanPlayer(2, n, heuristic2);
 
         //TODO: Implement other PlayerControllers (MinMax, AlphaBeta)
 
-        PlayerController[] players = { human, minMax1 };
+        PlayerController[] players = { minMax1, minMax2 };
 
         return players;
     }

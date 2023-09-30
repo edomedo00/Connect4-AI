@@ -1,9 +1,6 @@
 package NRow.Trees;
 
-import java.util.ArrayList;
-import java.util.List;
 import NRow.Board;
-import NRow.Trees.TreeNode;
 
 public class Tree {
     private TreeNode root;
@@ -18,5 +15,9 @@ public class Tree {
 
     public TreeNode getCurNode() {
         return curNode;
+    }
+
+    public void setCurNode(TreeNode newNode) {
+        this.curNode = newNode;
     }
 }
