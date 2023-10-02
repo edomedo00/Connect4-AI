@@ -20,4 +20,9 @@ public class Tree {
     public void setCurNode(TreeNode newNode) {
         this.curNode = newNode;
     }
-}
+
+    public Board getBoard(){
+        return board;
+    }
+
+}  

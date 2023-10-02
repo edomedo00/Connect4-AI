@@ -2,6 +2,7 @@ package NRow.Players;
 
 import NRow.Board;
 import NRow.Heuristics.Heuristic;
+import NRow.Trees.Tree;
 
 /**
  * Abstract class defining Player
@@ -44,4 +45,7 @@ public abstract class PlayerController {
    * @return column integer the player chose
    */
   public abstract int makeMove(Board board);
+  
+  public abstract Tree getTree();
+  public abstract void updateTree(int[][] boardState);
 }

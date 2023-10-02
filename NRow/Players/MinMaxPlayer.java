@@ -46,9 +46,24 @@ public class MinMaxPlayer extends PlayerController {
       // }
         
       TreeNode curNode = gameTree.getCurNode();
+      treeGen(curNode, board, depth);
+
+      // Move inside the tree
+      // update the current node 
+    
+      int bestMove = getBestAction(curNode, board);
+      this.gameTree.setCurNode(curNode.getChildren().get(bestMove));
+      //System.out.println(bestMove);
+      return bestMove;
+    }
+
+    public void treeGen (TreeNode curNode, Board board, int depth){
       for (int d = 0; d < depth; d++){
-        if (curNode.getChildren().isEmpty()){
-          // u advance a lawyer and check if the children of the node of the lawyer exist 
+        if(!emptyTreeNode(curNode)){ // if it is not empty
+          for(int n = 0; n < board.width ; n++){
+            treeGen(curNode.getChildren().get(n), board, depth-1);
+          }
+        } else { // is empty
           for (int n = 0; n < board.width ; n++){
             if(board.isValid(n)){
               Board newBoard = board.getNewBoard(n, playerId);
@@ -61,21 +76,11 @@ public class MinMaxPlayer extends PlayerController {
           }
         }
       }
-
-      
-      
-
-      // Move inside the tree
-      // update the current node 
-    
-      int bestMove = getBestAction(curNode, board);
-      this.gameTree.setCurNode(curNode.getChildren().get(bestMove));
-        
-      // gameTree.setCurNode(curNode.getChildren().get(bestMove));
-      return bestMove;
     }
 
-    public void treeGen (){}
+    public boolean emptyTreeNode(TreeNode curNode){
+      return curNode.getChildren().isEmpty();
+    }
 
     public int getBestAction(TreeNode curNode, Board board) {
       int[] moves = evalActions(curNode, board);
@@ -101,37 +106,35 @@ public class MinMaxPlayer extends PlayerController {
     }
 
       public int minimax(TreeNode curNode, int depth, int maximizingPlayer){
-        int maxEval;
-        int minEval;
 
         if(depth == 0){
           int eval = heuristic.evaluateBoard(playerId, curNode.getBoard());
-          curNode.setEval(eval);
-          System.out.println(eval);
+          //System.out.println(eval);
           return eval; 
         }
         if(maximizingPlayer == 1){
-          maxEval = Integer.MIN_VALUE;
+          int maxEval = Integer.MIN_VALUE;
           for (TreeNode node : curNode.getChildren()) {
             if(node.getEval()!=Integer.MIN_VALUE){
               int eval = minimax(node, depth - 1, 2);
               maxEval = Integer.max(maxEval, eval);
               //System.out.println(eval + " " + maxEval);
-              curNode.setEval(maxEval);
+              // curNode.setEval(maxEval);
             }
           }
-            // this.gameTree.setCurNode(curNode);
+            curNode.setEval(maxEval);
             return maxEval;
-            // return heuristic.evaluateBoard(playerId, curNode.getBoard()); 
           } else {
-            minEval = Integer.MAX_VALUE;
+            int minEval = Integer.MAX_VALUE;
             for (TreeNode node : curNode.getChildren()) {
-              int eval = minimax(node, depth - 1, 1);
-              minEval = Integer.max(minEval, eval);
-              //System.out.println(eval + " " + minEval);
-              curNode.setEval(minEval);
+              if(node.getEval()!=Integer.MAX_VALUE){
+                int eval = minimax(node, depth - 1, 1);
+                minEval = Integer.max(minEval, eval);
+                //System.out.println(eval + " " + minEval);
+                // curNode.setEval(minEval);
+              }
             }
-            // this.gameTree.setCurNode(curNode);
+            curNode.setEval(minEval);
             return minEval;
           }
         }
@@ -160,4 +163,18 @@ public class MinMaxPlayer extends PlayerController {
         
         
     // }
+
+    public void updateTree(int[][] boardState){
+      for(TreeNode node : gameTree.getCurNode().getChildren()){
+        if(boardState == node.getBoard().getBoardState()){
+          System.out.println("asdas");
+          gameTree.setCurNode(node);
+        }
+      }
+
+    }
+
+    public Tree getTree(){
+      return gameTree;
+    }
   }
