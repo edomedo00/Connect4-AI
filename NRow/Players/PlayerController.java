@@ -46,6 +46,7 @@ public abstract class PlayerController {
    */
   public abstract int makeMove(Board board);
   
-  public abstract Tree getTree();
-  public abstract void updateTree(int[][] boardState);
+  // public abstract Tree getTree();
+  // public abstract void updateTree(int[][] boardState);
+  public abstract void updateTree(int nextMove);
 }

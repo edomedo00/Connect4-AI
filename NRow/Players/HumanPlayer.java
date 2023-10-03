@@ -40,4 +40,5 @@ public class HumanPlayer extends PlayerController {
     return column - 1;
   }
 
+  public void updateTree(int nextMove){}
 }

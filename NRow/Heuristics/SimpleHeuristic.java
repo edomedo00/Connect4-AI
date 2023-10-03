@@ -70,6 +70,7 @@ public class SimpleHeuristic extends Heuristic {
         // Evaulate if the next opponent move (which connects 4) is possible 
         // (f.e. when diagonaly if the height of the next column is enough to connect [real threat], 
         // the next column(s) in a horizontal 3 is free [this is a real threat])
+        //System.out.println("maxInRow "+maxInRow);
         return maxInRow;
     }
 
