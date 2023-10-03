@@ -32,16 +32,20 @@ public class Game {
 
     while (!this.isOver()) {
       // turn player can make a move
+      System.out.println("Player: "+currentPlayer+" turn.");
       int nextMove = players[currentPlayer].makeMove(gameBoard);
-      System.out.println(nextMove);
+      // System.out.println(nextMove);
       gameBoard.play(nextMove, players[currentPlayer].playerId);
+      System.out.println("Gameboard - After move");
+      System.out.println(gameBoard);
+
       //gameBoard.play(players[currentPlayer].makeMove(players[currentPlayer].getTree().getBoard()), players[currentPlayer].playerId);
       // int[][] newBoardState = gameBoard.getBoardState();
       //gameBoard.
       
       // other player can make a move now
       currentPlayer = (currentPlayer == 0) ? 1 : 0;
-      players[currentPlayer].updateTree(nextMove);
+      players[currentPlayer].updateTree(nextMove, gameBoard);
       //players[currentPlayer].updateTree(gameBoard.getBoardState());
     }
 

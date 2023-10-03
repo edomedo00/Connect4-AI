@@ -48,5 +48,5 @@ public abstract class PlayerController {
   
   // public abstract Tree getTree();
   // public abstract void updateTree(int[][] boardState);
-  public abstract void updateTree(int nextMove);
+  public abstract void updateTree(int nextMove, Board gameboard);
 }

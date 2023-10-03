@@ -25,10 +25,11 @@ public class MinMaxPlayer extends PlayerController {
     */
     @Override
     public int makeMove(Board board) {
-      System.out.println(board);
+      System.out.println("Player board");
+      System.out.println(gameTree.getCurNode().getBoard());
         
       TreeNode curNode = gameTree.getCurNode();
-      treeGen(curNode, board, depth);
+      treeGen(curNode, board, depth, playerId);
 
       // for(int i = 0; i<board.width;i++){
       //   System.out.println(i);        
@@ -49,34 +50,30 @@ public class MinMaxPlayer extends PlayerController {
       return bestMove;
     }
 
-    public void treeGen (TreeNode curNode, Board board, int depth){
-      int playerIdCp = playerId;
+    public void treeGen (TreeNode curNode, Board board, int depth, int curPlayer){
       for (int d = 0; d < depth; d++){
-        if(playerId==1){
-          
-        }
-
         if(!emptyTreeNode(curNode)){ // if it is not empty
           for(int n = 0; n < board.width ; n++){
-            treeGen(curNode.getChildren().get(n), board, depth-1);
-          } // this is not creating a tree with 2 players moves, its only filling the board and next options w playerId
+            treeGen(curNode.getChildren().get(n), board, depth-1, changePlayer(curPlayer));
+          } 
         } else { // is empty
           for (int n = 0; n < board.width ; n++){
             if(board.isValid(n)){
-              Board newBoard = board.getNewBoard(n, playerId);
-              if(playerIdCp==1)
-                playerIdCp = 2;
-              else
-                playerIdCp = 1;
+              Board newBoard = board.getNewBoard(n, curPlayer);
               TreeNode newChild = new TreeNode(newBoard);
               curNode.addChild(newChild);
             } else {
               TreeNode nullChild = new TreeNode();
-              curNode.addChild(nullChild);            
+              curNode.addChild(nullChild);
             }    
           }
         }
+        curPlayer = changePlayer(curPlayer);
       }
+    }
+
+    public int changePlayer(int curPlayer){
+      return curPlayer == 1 ? 2 : 1;
     }
 
     public boolean emptyTreeNode(TreeNode curNode){
@@ -112,7 +109,9 @@ public class MinMaxPlayer extends PlayerController {
       }
       if(maximizingPlayer == 1){
         int maxEval = Integer.MIN_VALUE;
-        for (TreeNode node : curNode.getChildren()) {
+        curNode.getChildren().size();
+        for (int i = 0; i < curNode.getChildren().size(); i++) {
+          TreeNode node = curNode.getChildren().get(i);
           if(node.getEval()!=Integer.MIN_VALUE){
             int eval = minimax(node, depth - 1, 2);
             maxEval = Integer.max(maxEval, eval);
@@ -125,7 +124,7 @@ public class MinMaxPlayer extends PlayerController {
         } else{
           int minEval = Integer.MAX_VALUE; 
           for (TreeNode node : curNode.getChildren()) {
-            if(node.getEval()!=Integer.MIN_VALUE){ /////// MIN VALUE instead of MAX VALUE
+            if(node.getEval()!=Integer.MIN_VALUE){ 
               int eval = minimax(node, depth - 1, 1);
               minEval = Integer.min(minEval, eval);
               //System.out.println(eval + " " + minEval);
@@ -172,11 +171,15 @@ public class MinMaxPlayer extends PlayerController {
 
     // }
 
-    public void updateTree(int nextMove){
+    public void updateTree(int nextMove, Board board){
       if(!gameTree.getCurNode().getChildren().isEmpty()){
         gameTree.setCurNode(gameTree.getCurNode().getChildren().get(nextMove));
-      }
-        
+      } else{
+        gameTree.setCurNode(new TreeNode(board));
+        TreeNode curNode = gameTree.getCurNode();
+        treeGen(curNode, board, depth, playerId);
+        gameTree.setCurNode(curNode.getChildren().get(nextMove));
+      } 
     }
 
     public Tree getTree(){
