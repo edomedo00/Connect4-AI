@@ -1,7 +1,7 @@
 package NRow.Players;
 
 import java.util.Scanner;
-
+import NRow.Trees.Tree;
 import NRow.Board;
 import NRow.Heuristics.Heuristic;
 
@@ -25,7 +25,7 @@ public class HumanPlayer extends PlayerController {
    * Show the human player the current board and ask them for their next move
    */
   @Override
-  public int makeMove(Board board) {
+  public int makeMove(Board board, Tree gameTree) {
     System.out.println(board);
     
     if (heuristic != null)
@@ -41,4 +41,7 @@ public class HumanPlayer extends PlayerController {
   }
 
   public void updateTree(int nextMove){}
+  public int getDepth(){
+    return 0;
+  }
 }

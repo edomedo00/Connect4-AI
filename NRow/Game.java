@@ -1,12 +1,14 @@
 package NRow;
 
 import NRow.Players.PlayerController;
+import NRow.Trees.Tree;
 
 public class Game {
   private int gameN;
   private PlayerController[] players;
   private Board gameBoard;
   private int winner;
+  private Tree gameTree;
 
   /**
    * Create a new game
@@ -20,6 +22,7 @@ public class Game {
     this.gameN = gameN;
     this.players = players;
     this.gameBoard = new Board(boardWidth, boardHeight);
+    this.gameTree = new Tree(gameBoard);
   }
 
   /**
@@ -31,21 +34,22 @@ public class Game {
     int currentPlayer = 0;
 
     while (!this.isOver()) {
+      gameTree.treeGen(this.gameTree.getCurNode(), this.gameBoard, this.players[currentPlayer].getDepth(), currentPlayer + 1);
       // turn player can make a move
       System.out.println("Player: "+currentPlayer+" turn.");
-      int nextMove = players[currentPlayer].makeMove(gameBoard);
+      int nextMove = players[currentPlayer].makeMove(gameBoard, gameTree);
       // System.out.println(nextMove);
       gameBoard.play(nextMove, players[currentPlayer].playerId);
+      
       System.out.println("Gameboard - After move");
       System.out.println(gameBoard);
-
-      //gameBoard.play(players[currentPlayer].makeMove(players[currentPlayer].getTree().getBoard()), players[currentPlayer].playerId);
-      // int[][] newBoardState = gameBoard.getBoardState();
-      //gameBoard.
       
-      // other player can make a move now
+      //gameTree.addChild(new TreeNode(gameBoard);)
+      gameTree.updateCurNode(nextMove, gameBoard);
       currentPlayer = (currentPlayer == 0) ? 1 : 0;
-      players[currentPlayer].updateTree(nextMove, gameBoard);
+      // players[currentPlayer].updateTree(nextMove, gameBoard);
+      System.out.println("");
+
       //players[currentPlayer].updateTree(gameBoard.getBoardState());
     }
 

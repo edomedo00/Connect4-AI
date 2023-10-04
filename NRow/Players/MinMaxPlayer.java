@@ -1,20 +1,19 @@
 package NRow.Players;
 
-import NRow.Board;
 import NRow.Game;
+
+import NRow.Board;
 import NRow.Heuristics.Heuristic;
 import NRow.Trees.Tree;
 import NRow.Trees.TreeNode;
+import NRow.Game;
 
 public class MinMaxPlayer extends PlayerController {
     private int depth;
-    private Tree gameTree;
 
-    public MinMaxPlayer(int playerId, int gameN, int depth, Heuristic heuristic, Board board) {
+    public MinMaxPlayer(int playerId, int gameN, int depth, Heuristic heuristic) {
         super(playerId, gameN, heuristic);
         this.depth = depth;
-        gameTree = new Tree(board);
-
         //You can add functionality which runs when the player is first created (before the game starts)
     }
 
@@ -24,165 +23,68 @@ public class MinMaxPlayer extends PlayerController {
     * @return column integer the player chose
     */
     @Override
-    public int makeMove(Board board) {
-      System.out.println("Player board");
+    public int makeMove(Board board, Tree gameTree) {
+      System.out.println("Players board");
       System.out.println(gameTree.getCurNode().getBoard());
-        
-      TreeNode curNode = gameTree.getCurNode();
-      treeGen(curNode, board, depth, playerId);
-
-      // for(int i = 0; i<board.width;i++){
-      //   System.out.println(i);        
-      //   System.out.println("Ev: "+curNode.getChildren().get(i).getEval());
-      //   System.out.println("----");
-      //   for(TreeNode node : curNode.getChildren().get(i).getChildren()){
-      //     System.out.println(node.getEval());
-                    
-      //   }
-      //   System.out.println("****");
-      // }
-      // Move inside the tree
-      // update the current node 
-    
-      int bestMove = getBestAction(curNode, board);
-      this.gameTree.setCurNode(curNode.getChildren().get(bestMove));
-      //System.out.println(bestMove);
-      return bestMove;
+      
+      minimax(gameTree.getCurNode(), this.depth, 1);
+      
+      int bestIndex = 0;
+      for(int i = 0; i<gameTree.getCurNode().getChildren().size();i++){
+        if(gameTree.getCurNode().getChild(i).getEval(playerId) > gameTree.getCurNode().getChild(bestIndex).getEval(playerId)){
+          bestIndex = i;
+        }
+      }
+      return bestIndex;
     }
 
-    public void treeGen (TreeNode curNode, Board board, int depth, int curPlayer){
-      for (int d = 0; d < depth; d++){
-        if(!emptyTreeNode(curNode)){ // if it is not empty
-          for(int n = 0; n < board.width ; n++){
-            treeGen(curNode.getChildren().get(n), board, depth-1, changePlayer(curPlayer));
-          } 
-        } else { // is empty
-          for (int n = 0; n < board.width ; n++){
-            if(board.isValid(n)){
-              Board newBoard = board.getNewBoard(n, curPlayer);
-              TreeNode newChild = new TreeNode(newBoard);
-              curNode.addChild(newChild);
-            } else {
-              TreeNode nullChild = new TreeNode();
-              curNode.addChild(nullChild);
-            }    
+    public boolean boardIsFull(int[][] boardstate){
+      for(int i = 0; i < boardstate.length; i++){
+        for(int j = 0; j < boardstate[i].length; j++){
+          if(boardstate[i][j] == 0){
+            return false;
           }
         }
-        curPlayer = changePlayer(curPlayer);
       }
-    }
-
-    public int changePlayer(int curPlayer){
-      return curPlayer == 1 ? 2 : 1;
-    }
-
-    public boolean emptyTreeNode(TreeNode curNode){
-      return curNode.getChildren().isEmpty();
-    }
-
-    public int getBestAction(TreeNode curNode, Board board) {
-      int[] moves = evalActions(curNode, board);
-      int bestAction = 0;
-      for (int i = 0; i < moves.length; i++) {
-          bestAction = moves[i] > moves[bestAction] ? i : bestAction;
-      }
-      return bestAction;
-    }
-
-    public int[] evalActions(TreeNode curNode, Board board){
-      //TreeNode curNodeCopy = curNode;
-      minimax(curNode, depth, 1);
-      // this.gameTree.setCurNode(curNode); //
-      int[] moves = new int[board.width];
-      for (int i = 0; i < board.width; i++) {
-          moves[i] = curNode.getChildren().get(i).getEval();
-          //System.out.println(moves[i]);
-      }
-      return moves;
+      return true;
     }
 
     public int minimax(TreeNode curNode, int depth, int maximizingPlayer){
-      if(depth == 0){
+      // int eval = heuristic.evaluateBoard(playerId, curNode.getBoard());
+      if(curNode.getBoard()==null){
+        return Integer.MAX_VALUE;
+      } // || boardIsFull(curNode.getBoard().getBoardState())
+      if(depth == 0 ){
         int eval = heuristic.evaluateBoard(playerId, curNode.getBoard());
-        //System.out.println("eval " + eval);
         return eval;
       }
       if(maximizingPlayer == 1){
         int maxEval = Integer.MIN_VALUE;
-        curNode.getChildren().size();
-        for (int i = 0; i < curNode.getChildren().size(); i++) {
-          TreeNode node = curNode.getChildren().get(i);
-          if(node.getEval()!=Integer.MIN_VALUE){
+        for (TreeNode node : curNode.getChildren()) {
+          if(node.getEval(playerId)!=Integer.MIN_VALUE){
             int eval = minimax(node, depth - 1, 2);
             maxEval = Integer.max(maxEval, eval);
-            //System.out.println(eval + " " + maxEval);
-            // curNode.setEval(maxEval);
           }
         }
-          curNode.setEval(maxEval);
-          return maxEval;
-        } else{
-          int minEval = Integer.MAX_VALUE; 
-          for (TreeNode node : curNode.getChildren()) {
-            if(node.getEval()!=Integer.MIN_VALUE){ 
-              int eval = minimax(node, depth - 1, 1);
-              minEval = Integer.min(minEval, eval);
-              //System.out.println(eval + " " + minEval);
-              // curNode.setEval(minEval);
-            }
-          }
-          curNode.setEval(minEval);
-          return minEval;
-        }
-      }
-        
-        // Example: 
-    //     int maxValue = Integer.MIN_VALUE;
-    //     int maxMove = 0;
-    //     for(int i = 0; i < board.width; i++) { //for each of the possible moves
-    //         if(board.isValid(i)) { //if the move is valid
-    //             Board newBoard = board.getNewBoard(i, playerId); // Get a new board resulting from that move
-    //             int value = heuristic.evaluateBoard(playerId, newBoard); //evaluate that new board to get a heuristic value from it
-    //             if(value > maxValue) {
-    //                 maxMove = i;
-    //             }
-    //         }
-    //     }
-    //     // This returns the same as:
-    //     heuristic.getBestAction(playerId, board); // Very useful helper function!
-        
-
-    //     /*
-    //     This is obviously not enough (this is depth 1)
-    //     Your assignment is to create a data structure (tree) to store the gameboards such that you can evaluate a higher depths.
-    //     Then, use the minmax algorithm to search through this tree to find the best move/action to take!
-    //     */
-        
-        
-    // }
-
-    // public void updateTree(int[][] boardState){
-    //   for(TreeNode node : gameTree.getCurNode().getChildren()){
-    //     if(boardState == node.getBoard().getBoardState()){
-    //       System.out.println("asdas");
-    //       gameTree.setCurNode(node);
-    //     }
-    //   }
-
-    // }
-
-    public void updateTree(int nextMove, Board board){
-      if(!gameTree.getCurNode().getChildren().isEmpty()){
-        gameTree.setCurNode(gameTree.getCurNode().getChildren().get(nextMove));
+        curNode.setEval(maxEval, playerId);
+          
+        return maxEval;
       } else{
-        gameTree.setCurNode(new TreeNode(board));
-        TreeNode curNode = gameTree.getCurNode();
-        treeGen(curNode, board, depth, playerId);
-        gameTree.setCurNode(curNode.getChildren().get(nextMove));
-      } 
+        int minEval = Integer.MAX_VALUE; 
+        for (TreeNode node : curNode.getChildren()) {
+          if(node.getEval(playerId)!=Integer.MIN_VALUE){ 
+            int eval = minimax(node, depth - 1, 1);
+            minEval = Integer.min(minEval, eval);
+          }
+        }
+        curNode.setEval(minEval, playerId);
+        return minEval;
+      }
     }
 
-    public Tree getTree(){
-      return gameTree;
-    }
+  @Override
+  public int getDepth(){
+    return this.depth;
   }
+}
+

@@ -44,9 +44,11 @@ public abstract class PlayerController {
    * @param board the current board
    * @return column integer the player chose
    */
-  public abstract int makeMove(Board board);
+  public abstract int makeMove(Board board, Tree gametTree);
   
   // public abstract Tree getTree();
   // public abstract void updateTree(int[][] boardState);
-  public abstract void updateTree(int nextMove, Board gameboard);
+  // public abstract void treeGen();
+  // public abstract void updateTree(int nextMove, Board gameboard);
+  public abstract int getDepth();
 }

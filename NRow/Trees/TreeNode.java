@@ -5,18 +5,23 @@ import java.util.List;
 import NRow.Board;
 
 public class TreeNode {
-    private int eval;
+    private int[] eval;
     private Board board;
     private List<TreeNode> children;
 
     public TreeNode(Board board) {
         this.board = board;
-        this.eval = 0;
+        this.eval = new int[2];
+        this.eval[0] = -100;
+        this.eval[1] = -100;
         this.children = new ArrayList<>();
     }
 
     public TreeNode() {
-        this.eval = Integer.MIN_VALUE;
+        this.board = null;
+        this.eval = new int[2];
+        this.eval[0] = Integer.MIN_VALUE;
+        this.eval[1] = Integer.MIN_VALUE;
         this.children = new ArrayList<>();
     }
 
@@ -24,19 +29,23 @@ public class TreeNode {
         children.add(child);
     }
 
-    public int getEval() {
-        return eval;
+    public int getEval(int playerId) {
+        return eval[playerId - 1];
+    }
+
+    public void setEval(int newEval, int playerId) {
+        this.eval[playerId - 1] = newEval;
     }
     
     public Board getBoard(){
-      return board;
-    }
-
-    public void setEval(int evaluation) {
-      this.eval = evaluation;
+        return this.board;
     }
 
     public List<TreeNode> getChildren() {
-        return children;
+        return this.children;
+    }
+
+    public TreeNode getChild(int index) {
+        return this.children.get(index);
     }
 }

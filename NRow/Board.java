@@ -130,4 +130,14 @@ public class Board {
     return output;
   }
 
+  public Boolean equalsss(Board other){
+    for(int i = 0; i < this.boardState.length; i++){
+      for(int j = 0; j < this.boardState[i].length; j++){
+        if(this.boardState[i][j] != other.getBoardState()[i][j]){
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
