@@ -12,8 +12,8 @@ public class TreeNode {
     public TreeNode(Board board) {
         this.board = board;
         this.eval = new int[2];
-        this.eval[0] = -100;
-        this.eval[1] = -100;
+        this.eval[0] = 0;
+        this.eval[1] = 0;
         this.children = new ArrayList<>();
     }
 
@@ -47,5 +47,14 @@ public class TreeNode {
 
     public TreeNode getChild(int index) {
         return this.children.get(index);
+    }
+
+    public Boolean noValidChildren(){
+        for(TreeNode node : this.getChildren()){
+            if(node.getBoard() != null){
+                return false;
+            }
+        }
+        return true;
     }
 }

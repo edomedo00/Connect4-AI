@@ -38,7 +38,7 @@ public class Game {
       // turn player can make a move
       System.out.println("Player: "+currentPlayer+" turn.");
       int nextMove = players[currentPlayer].makeMove(gameBoard, gameTree);
-      // System.out.println(nextMove);
+      System.out.println("Next move: " + (nextMove+1));
       gameBoard.play(nextMove, players[currentPlayer].playerId);
       
       System.out.println("Gameboard - After move");
@@ -47,7 +47,7 @@ public class Game {
       //gameTree.addChild(new TreeNode(gameBoard);)
       gameTree.updateCurNode(nextMove, gameBoard);
       currentPlayer = (currentPlayer == 0) ? 1 : 0;
-      // players[currentPlayer].updateTree(nextMove, gameBoard);
+      // players[currentPlayer].updateTree(nextMove, gameBoard      
       System.out.println("");
 
       //players[currentPlayer].updateTree(gameBoard.getBoardState());
